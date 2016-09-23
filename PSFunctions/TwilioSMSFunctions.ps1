@@ -14,11 +14,8 @@ function Send-SMS ([string]$SMSMessage, [string]$RecieverPhoneNumber){
     $TwilioPhoneNumber = Get-AutomationVariable -Name 'TwilioPhoneNumber'
 
     try {
-        # Build URI with Account Sid
         $URI = "https://api.twilio.com/2010-04-01/Accounts/$TwilioAccountSid/SMS/Messages.json"
-        # Build data to post
         $MessageData = "From=$TwilioPhoneNumber&To=$RecieverPhoneNumber&Body=$SMSMessage"
-        # Build authorization for header
         $SecureAuthToken = ConvertTo-SecureString $TwilioAuthToken -AsPlainText -Force
         $AuthCredentials = New-Object System.Management.Automation.PSCredential($TwilioAccountSid,$SecureAuthToken) 
 
