@@ -12,19 +12,12 @@
     https://github.com/Tritze/furry-funicular
 #>
 
-#region includes
-. ../PSFunctions/ADFunctions.ps1
-. ../PSFunctions/SQLFunctions.ps1
-. ../PSFunctions/SupportFunctions.ps1
-. ../PSFunctions/TwilioSMSFunctions.ps1
-#endregion includes
-
-
 param(
     [object]$WebhookData
 )
 
-# Check if runbook was started by webhook
+Import-Module furry-funicular.psm1 -Force
+
 if ($WebhookData -ne $null){
     $SMSData = Get-IncomingSMSData ($WebHookData)
     $UserName = Get-UserNameByPhoneNumber($SMSData.FromNumber)

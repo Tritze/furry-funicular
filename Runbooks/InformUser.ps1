@@ -12,25 +12,19 @@
     https://github.com/Tritze/furry-funicular
 #>
 
-#region includes
-. ../PSFunctions/ADFunctions.ps1
-. ../PSFunctions/SQLFunctions.ps1
-. ../PSFunctions/SupportFunctions.ps1
-. ../PSFunctions/TwilioSMSFunctions.ps1
-#endregion includes
-
 param(
     [object]$WebhookData
 )
 
-# Check if runbook was started by webhook
+Import-Module furry-funicular.psm1 -Force
+
 if ($WebhookData -ne $null){
-    $LockedUserName = Get-UserNameFromOMSAlert($WebhookData)
-    $LockedUserData = Get-UserData($LockedUserName)
+    $LockedUserName = Get-UserNameFromOMSAlert -WebHookData $WebhookData
+    $LockedUserData = Get-UserData -UserName $LockedUserName
     If ($LockedUserData.MobilePhoneNumber -ne $null){
         If ($LockedUserData.Office -ne $null){
-            If (Create-ResetPasswordDBEntry ($LockedUserData.MobilePhoneNumber, $LockedUserName)){
-                If (Send-SMS ("Your account has been locked out. Reply with UNLOCK to unlock your account.", $LockedUserData.MobilePhoneNumber)){
+            If (Create-ResetPasswordDBEntry -MobilePhoneNumber $LockedUserData.MobilePhoneNumber -UserName $LockedUserName){
+                If (Send-SMS -SMSMessage "Account locked. Reply OPEN to unlock." -RecieverPhoneNumber $LockedUserData.MobilePhoneNumber){
                     Write-Host "DB entry created and SMS send to user."
                 }
                 else {

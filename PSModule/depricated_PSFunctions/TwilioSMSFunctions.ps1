@@ -18,9 +18,7 @@ function Send-SMS ([string]$SMSMessage, [string]$RecieverPhoneNumber){
         $MessageData = "From=$TwilioPhoneNumber&To=$RecieverPhoneNumber&Body=$SMSMessage"
         $SecureAuthToken = ConvertTo-SecureString $TwilioAuthToken -AsPlainText -Force
         $AuthCredentials = New-Object System.Management.Automation.PSCredential($TwilioAccountSid,$SecureAuthToken) 
-
-        $msg = Invoke-RestMethod -Uri $URI -Body $MessageData -Credential $AuthCredentials -Method "POST" -ContentType "application/x-www-form-urlencoded"
-
+        Invoke-RestMethod -Uri $URI -Body $MessageData -Credential $AuthCredentials -Method "POST" -ContentType "application/x-www-form-urlencoded"
         return $true
     }
     catch {

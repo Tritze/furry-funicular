@@ -10,7 +10,8 @@ function Generate-RandomPassword([int]$PasswordLenght = 15){
 }
 
 function Get-UserNameFromOMSAlert ([object]$WebHookData){
-    $RequestBody = ConvertFrom-json $WebHookData.RequestBody
-    $null,$user = $RequestBody.SearchResult.value.Account.Split("\")
-    return $user
+    $WebHookDataJson = ConvertFrom-Json $WebHookData
+    $RequestBody = ConvertFrom-json $WebHookDataJson.RequestBody
+    $null,$UserName,$null,$null = $RequestBody.SearchResult.value.Account.Split("\")
+    return $UserName
 }

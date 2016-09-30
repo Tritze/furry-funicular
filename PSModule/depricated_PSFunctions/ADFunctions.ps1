@@ -3,7 +3,7 @@ function Get-UserData([string]$UserName){
     $ADAdminUserPassword  = Get-AutomationVariable -Name 'ADAdminUserPassword'
     $pass = ConvertTo-SecureString -String $ADAdminUserPassword -AsPlainText -Force
     $cred = New-Object System.Management.Automation.PSCredential ($ADAdminUserName, $pass)
-    $user = Get-ADUser -Identity User01 -Properties mobile,office -Credential $cred
+    $user = Get-ADUser -Identity $UserName -Properties mobile,office -Credential $cred
     return New-Object -TypeName psobject -Property @{
         Office = $user.office
         MobilePhoneNumber = $user.mobile
