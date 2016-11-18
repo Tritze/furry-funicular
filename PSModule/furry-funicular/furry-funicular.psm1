@@ -68,7 +68,7 @@ function Check-ResetPasswordDBEntry ([string]$MobilePhoneNumber, [int]$Status) {
         $SQLResultTable = New-Object System.Data.DataTable
         $SQLResultTable.Load($SQLResult)
         $SQLConnection.Close()
-        if ($SQLResultTable -eq $null)
+        if ($SQLResultTable.UserName -eq $null)
         {
             return $false
         }

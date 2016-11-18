@@ -20,7 +20,7 @@ Import-Module furry-funicular.psm1 -Force
 
 if ($WebhookData -ne $null){
     $SMSData = Get-IncomingSMSData -WebHookData $WebHookData
-    $UserName = Get-UserNameByPhoneNumber-MobilePhoneNumber $SMSData.FromNumber
+    $UserName = Get-UserNameByPhoneNumber -MobilePhoneNumber $SMSData.FromNumber
     $UserData = Get-UserData -UserName $UserName
     if ($UserName -ne $null) {  
         If (Check-ResetPasswordDBEntry -MobilePhoneNumber $SMSData.FromNumber -Status 1){
