@@ -19,13 +19,13 @@ param(
 Import-Module furry-funicular.psm1 -Force
 
 if ($WebhookData -ne $null){
-    $SMSData = Get-IncomingSMSData ($WebHookData)
-    $UserName = Get-UserNameByPhoneNumber($SMSData.FromNumber)
-    $UserData = Get-UserData($UserName)
+    $SMSData = Get-IncomingSMSData -WebHookData $WebHookData
+    $UserName = Get-UserNameByPhoneNumber-MobilePhoneNumber $SMSData.FromNumber
+    $UserData = Get-UserData -UserName $UserName
     if ($UserName -ne $null) {  
-        If (Check-ResetPasswordDBEntry ($SMSData.FromNumber , 1)){
+        If (Check-ResetPasswordDBEntry -MobilePhoneNumber $SMSData.FromNumber -Status 1){
             If ($SMSData.Body.ToUpper() -eq "OPEN"){
-                If (Update-ResetPasswordDBEntry ($SMSData.FromNumber, 2)){
+                If (Update-ResetPasswordDBEntry -MobilePhoneNumber $SMSData.FromNumber -Status 2){
                     Send-SMS ("Reply with the location of your office (e.g. Stuttgart) to unlock your account.", $UserData.MobilePhoneNumber)
                 }
                 else {
@@ -37,12 +37,12 @@ if ($WebhookData -ne $null){
                 #Write-Error "User doesn't send OPEN."
             }
         }
-        elseif (Check-ResetPasswordDBEntry ($SMSData.FromNumber, 2)) {
+        elseif (Check-ResetPasswordDBEntry -MobilePhoneNumber $SMSData.FromNumber -Status 2) {
             if ($UserData.Office.ToUpper() -eq $SMSData.Body.ToUpper()) {
                 $password = Generate-RandomPassword(15)
-                Set-UserPW ($password.SecureString, $UserName)
-                Send-SMS ("Your account has been unlocked. Use \'$password.PlainText\' to log in and change your password.", $UserData.MobilePhoneNumber)
-                Delete-ResetPasswordDBEntry ($UserData.MobilePhoneNumber)
+                Set-UserPW -SecureStringPW $password.SecureString -UserName $UserName
+                Send-SMS -SMSMessage "Your account has been unlocked. Use \'$password.PlainText\' to log in and change your password." -RecieverPhoneNumber $UserData.MobilePhoneNumber
+                Delete-ResetPasswordDBEntry -MobilePhoneNumber $UserData.MobilePhoneNumber
             }
             else {
                 Send-SMS ("Password reset aborted! Reply with OPEN to reset password.", $SMSData.FromNumber)

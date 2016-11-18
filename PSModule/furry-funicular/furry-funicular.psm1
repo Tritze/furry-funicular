@@ -87,7 +87,7 @@ function Update-ResetPasswordDBEntry ([string]$MobilePhoneNumber, [int]$Status) 
     $SQLConnectionString = Get-AutomationVariable -Name 'SQLConnectionString'
     $DatabaseName = Get-AutomationVariable -Name 'DatabaseName'
     try {
-        $SQLQuery = "UPDATE $DatabaseName (Status,LastStepTime) VALUES ('$Status',GETDATE()) WHERE MobilePhoneNumber = '$MobilePhoneNumber'"
+        $SQLQuery = "UPDATE $DatabaseName SET Status='$Status', LastStepTime=GETDATE() WHERE MobilePhoneNumber = '$MobilePhoneNumber'"
         $SQLConnection = New-Object System.Data.SqlClient.SqlConnection
         $SQLConnection.ConnectionString = $SQLConnectionString
         $SQLConnection.Open()
@@ -179,7 +179,7 @@ function Get-IncomingSMSData ([object]$WebHookData){
     $RequestBody -split "&" | % {$key,$value = $_ -split "="; $SMSData.Add($key,$value)}
     return New-Object -TypeName psobject -Property @{
         Body = $SMSData.Body
-        FromNumber = $SMSData.From.replace("%2B","+")
+        FromNumber = $SMSData.From.replace("%2B","00")
     } 
 }
 function Send-SMS ([string]$SMSMessage, [string]$RecieverPhoneNumber){
