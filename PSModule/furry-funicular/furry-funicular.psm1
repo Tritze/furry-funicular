@@ -19,7 +19,7 @@ function Get-UserData([string]$UserName){
         MobilePhoneNumber = $user.mobile
     }
 }
-function Set-UserPW ([string]$SecureStringPW, [string]$UserName) {
+function Set-UserPW ($SecureStringPW, [string]$UserName) {
     $ADAdminUserName      = Get-AutomationVariable -Name 'ADAdminUserName'
     $ADAdminUserPassword  = Get-AutomationVariable -Name 'ADAdminUserPassword'
     $pass = ConvertTo-SecureString -String $ADAdminUserPassword -AsPlainText -Force
@@ -166,7 +166,7 @@ function Generate-RandomPassword([int]$PasswordLenght = 15){
     }
 }
 function Get-UserNameFromOMSAlert ([object]$WebHookData){
-    $RequestBody = ConvertFrom-json $WebHookDataJ.RequestBody
+    $RequestBody = ConvertFrom-json $WebHookData.RequestBody
     $null,$UserName,$null,$null = $RequestBody.SearchResult.value.Account.Split("\")
     return $UserName
 }

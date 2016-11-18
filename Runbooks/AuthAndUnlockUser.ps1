@@ -41,7 +41,7 @@ if ($WebhookData -ne $null){
             if ($UserData.Office.ToUpper() -eq $SMSData.Body.ToUpper()) {
                 $password = Generate-RandomPassword(15)
                 Set-UserPW -SecureStringPW $password.SecureString -UserName $UserName
-                Send-SMS -SMSMessage "Your account has been unlocked. Use \'$password.PlainText\' to log in and change your password." -RecieverPhoneNumber $UserData.MobilePhoneNumber
+                Send-SMS -SMSMessage ("Your account has been unlocked. Use '" + $password.PlainText + "' to log in and change your password.") -RecieverPhoneNumber $UserData.MobilePhoneNumber
                 Delete-ResetPasswordDBEntry -MobilePhoneNumber $UserData.MobilePhoneNumber
             }
             else {
